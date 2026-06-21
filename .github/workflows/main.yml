@@ -21,6 +21,8 @@ jobs:
          cache: 'maven'
          
       - name: integration testing
-        run: mvn verify 
+        run: |
+         cd auth-services
+         mvn verify 
          
          
