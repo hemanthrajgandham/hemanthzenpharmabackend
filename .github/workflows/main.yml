@@ -22,7 +22,7 @@ jobs:
          
       - name: integration testing
         run: |
-         cd auth-services
+         cd auth-service
          mvn verify 
          
          
