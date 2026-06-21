@@ -1,0 +1,16 @@
+name: cicd pipeline
+on:
+ workflow_dispatch:
+   inputs:
+     environments:
+       type: choice       
+       options:
+         - dev
+         - qa
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+         
