@@ -23,6 +23,6 @@ jobs:
       - name: integration testing
         run: |
          cd auth-service
-         mvn package 
+         mvn verify 
          
          
