@@ -20,4 +20,7 @@ jobs:
          java-version: '25'
          cache: 'maven'
          
+      - name: integration testing
+        run: mvn verify 
+         
          
