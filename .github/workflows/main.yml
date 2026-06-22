@@ -41,6 +41,7 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
          language: java
+         output: results
          
          ram: 4096
       - name: upload codeql results
