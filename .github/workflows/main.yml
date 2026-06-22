@@ -23,6 +23,13 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: java     
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+         output: results
+         upload: always
+         ram: 4096
+
       - name: integration testing
         run: |
          cd auth-service
