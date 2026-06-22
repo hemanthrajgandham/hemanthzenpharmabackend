@@ -40,8 +40,8 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-         output: results
-         upload: always
+         language: java
+         
          ram: 4096
       - name: upload codeql results
         uses: actions/upload-artifact@v7.0.1
