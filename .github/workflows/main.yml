@@ -30,61 +30,64 @@ jobs:
          distribution: 'temurin'
          java-version: '17'
          cache: 'maven'
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: java     
-     
-
-      - name: integration testing
-        run: |
-         cd auth-service
-         mvn verify 
-      - name: upload reports
-        uses: actions/upload-artifact@v7.0.1
-        with:
-          name: jococo report
-          path: auth-service/target/site/jacoco/
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        continue-on-error: false
-        with:
-         language: java
-         output: results
-         
-         ram: 4096
-      - name: upload codeql results
-        uses: actions/upload-artifact@v7.0.1
-        with:
-           name: codeql results
-           path: results
-      - name: Semgrep SAST (java · owasp-top-ten)
-        uses: semgrep/semgrep-action@v1
-        continue-on-error: false
-        with:
-          config: >-
-            p/java
-            p/owasp-top-ten
-
-      - name: create cahce folder
-        run: mkdir -p ~/.dependency-check #ODC_DATA_DIR
-         
-      - name: Cache OWASP NVD database
-        
-        uses: actions/cache@v4
-        with:
-          path: ~/.dependency-check #ODC_DATA_DIR
-          key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.servicedir)) }}
-          restore-keys: owasp-nvd-${{ runner.os }}-
-      - name: Check cache contents
-        run: ls -la $HOME/.dependency-check
-
-      - name: OWASP Dependency Check
-        if: false
-        working-directory: ${{ inputs.servicedir }}
-        run: | 
-         
-         mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report -DnvdApiKey=${{ secrets.NVD_API_KEY }}
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+      - name: set image number based on github run number
+        run: echo "IMAGE_NUMBER=${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+      - name: Print image number
+        run: echo "Image number is ${{ env.IMAGE_NUMBER }}"
+      # - name: Initialize CodeQL
+      #   uses: github/codeql-action/init@v3
+      #   with:
+      #     languages: java     
+      #
+      # - name: integration testing
+      #   run: |
+      #    cd auth-service
+      #    mvn verify 
+      # - name: upload reports
+      #   uses: actions/upload-artifact@v7.0.1
+      #   with:
+      #     name: jococo report
+      #     path: auth-service/target/site/jacoco/
+      # - name: Perform CodeQL Analysis
+      #   uses: github/codeql-action/analyze@v2
+      #   continue-on-error: false
+      #   with:
+      #    language: java
+      #    output: results
+      #    
+      #    ram: 4096
+      # - name: upload codeql results
+      #   uses: actions/upload-artifact@v7.0.1
+      #   with:
+      #      name: codeql results
+      #      path: results
+      # - name: Semgrep SAST (java · owasp-top-ten)
+      #   uses: semgrep/semgrep-action@v1
+      #   continue-on-error: false
+      #   with:
+      #     config: >-
+      #       p/java
+      #       p/owasp-top-ten
+      #
+      # - name: create cahce folder
+      #   run: mkdir -p ~/.dependency-check #ODC_DATA_DIR
+      #    
+      # - name: Cache OWASP NVD database
+      #   
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.dependency-check #ODC_DATA_DIR
+      #     key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.servicedir)) }}
+      #     restore-keys: owasp-nvd-${{ runner.os }}-
+      # - name: Check cache contents
+      #   run: ls -la $HOME/.dependency-check
+      #
+      # - name: OWASP Dependency Check
+      #   if: false
+      #   working-directory: ${{ inputs.servicedir }}
+      #   run: | 
+      #    
+      #    mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report -DnvdApiKey=${{ secrets.NVD_API_KEY }}
+      #   env:
+      #     NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       
