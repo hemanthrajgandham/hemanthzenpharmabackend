@@ -51,6 +51,7 @@ jobs:
            path: results
       - name: semgrep scan
         uses: semgrep/semgrep-action@v1
+        continue-on-error: false
         with:
           config: >-
            p/java
