@@ -81,4 +81,4 @@ jobs:
         working-directory: ${{ inputs.servicedir }}
         run: | 
          
-         mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report${{ inputs.servicedir }}
+         mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report
