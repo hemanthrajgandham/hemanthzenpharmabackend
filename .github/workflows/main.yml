@@ -70,6 +70,6 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.dependency-check
-          key: owasp-nvd-${{runner.os}}-${{hashfiles(format('${0}/pom.xml', input.servicedir))}}
+          key: owasp-nvd-${{runner.os}}-${{hashfiles(format('${0}/pom.xml', inputs.servicedir))}}
           restore-keys: |
             owasp-nvd-${{runner.os}}-
