@@ -31,9 +31,10 @@ jobs:
          java-version: '17'
          cache: 'maven'
       - name: set image number based on github run number
-        run: echo "IMAGE_NUMBER=sha-${GITHUB_SHA::7}" >> $GITHUB_ENV
+        id: meta
+        run: echo "IMAGE_NUMBER=sha-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       - name: Print image number
-        run: echo "Image number is ${{ env.IMAGE_NUMBER }}"
+        run: echo "Image number is ${{ steps.meta.outputs.IMAGE_NUMBER }}"
       # - name: Initialize CodeQL
       #   uses: github/codeql-action/init@v3
       #   with:
