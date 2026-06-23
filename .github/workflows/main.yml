@@ -39,6 +39,7 @@ jobs:
           path: auth-service/target/site/jacoco/
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+        continue-on-error: false
         with:
          language: java
          output: results
