@@ -78,8 +78,7 @@ jobs:
           restore-keys: owasp-nvd-${{ runner.os }}-
 
       - name: OWASP Dependency Check
-        env:
-          service_dir: ${{ inputs.servicedir }}
+        working-directory: ${{ inputs.servicedir }}
         run: | 
-         cd "$service_dir"
+         
          mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report${{ inputs.servicedir }}
