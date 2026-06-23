@@ -69,7 +69,7 @@ jobs:
       - name: owasp dependency check cache
         uses: actions/cache@v4
         with:
-          path: ~/.dependency-check
+          path: ~/.owasp/.dependency-check-data
           key: owasp-nvd-${{runner.os}}-${{hashfiles(format('${0}/pom.xml', inputs.servicedir))}}
           restore-keys: |
             owasp-nvd-${{runner.os}}-
