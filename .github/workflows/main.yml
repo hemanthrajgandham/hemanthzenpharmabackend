@@ -7,7 +7,7 @@ on:
        options:
          - dev
          - qa
-      servicedir:
+     servicedir:
        description: 'Service directory'
        required: true
        type: choice
