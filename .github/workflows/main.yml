@@ -76,6 +76,8 @@ jobs:
           path: ~/.dependency-check #ODC_DATA_DIR
           key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.servicedir)) }}
           restore-keys: owasp-nvd-${{ runner.os }}-
+      - name: Check cache contents
+        run: ls -la $HOME/.dependency-check
 
       - name: OWASP Dependency Check
         working-directory: ${{ inputs.servicedir }}
@@ -84,3 +86,4 @@ jobs:
          mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report 
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+      
