@@ -65,6 +65,9 @@ jobs:
           config: >-
             p/java
             p/owasp-top-ten
+
+      - name: create cahce folder
+        run: mkdir -p ~/.dependency-check
          
       - name: Cache OWASP NVD database
         
@@ -73,3 +76,5 @@ jobs:
           path: ~/.dependency-check
           key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.service-dir)) }}
           restore-keys: owasp-nvd-${{ runner.os }}-
+
+     
