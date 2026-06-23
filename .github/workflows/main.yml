@@ -81,6 +81,5 @@ jobs:
         env:
           service_dir: ${{ inputs.servicedir }}
         run: | 
-         TARGET_DIR="$SERVICE_DIR"
-         cd "$TARGET_DIR"
+         cd "$service_dir"
          mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report${{ inputs.servicedir }}
