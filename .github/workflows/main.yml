@@ -100,7 +100,7 @@ jobs:
       - name: aws credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::175546876740:role/pharma-dev-github-action-role
+          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/pharma-dev-github-action-role
           aws-region: us-east-1
       
       - name: login to ecr
