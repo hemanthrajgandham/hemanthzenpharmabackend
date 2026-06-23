@@ -35,6 +35,8 @@ jobs:
         run: echo "IMAGE_NUMBER=sha-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       - name: Print image number
         run: echo "Image number is ${{ steps.meta.outputs.IMAGE_NUMBER }}"
+      - name: login to ecr
+        uses: aws-actions/amazon-ecr-login@v2
       # - name: Initialize CodeQL
       #   uses: github/codeql-action/init@v3
       #   with:
