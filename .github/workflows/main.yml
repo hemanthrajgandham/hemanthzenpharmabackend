@@ -78,13 +78,6 @@ jobs:
           restore-keys: owasp-nvd-${{ runner.os }}-
 
       - name: OWASP Dependency Check
-        uses: dependency-check/dependency-check-action@main
-        with:
-          scan: ${{ inputs.service-dir }}
-          format: ALL
-          out: ${{ inputs.service-dir }}/target/dependency-check-report
-          project: ${{ inputs.service-dir }}
-          failOnCVSS: 7
-          dataDirectory: ~/.dependency-check #ODC_DATA_DIR
-
-     
+        run: | 
+        cd ${{ inputs.servicedir }}
+        mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report
