@@ -49,12 +49,12 @@ jobs:
         with:
            name: codeql results
            path: results
-      - name: semgrep scan
+      - name: Semgrep SAST (java · owasp-top-ten)
         uses: semgrep/semgrep-action@v1
         continue-on-error: false
         with:
           config: >-
-           p/java
-           p/spring-boot
-           p/owasp-top-10
-          output: semgrep-results.json       
+            p/java
+            p/owasp-top-ten
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}   
