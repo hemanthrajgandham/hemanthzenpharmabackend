@@ -115,5 +115,5 @@ jobs:
       - name: docker build
         id: docker-build
         run: |
-          image= "${{steps.login-ecr.outputs.registry}}/${{inputs.project}}-${{inputs.environments}}-${{inputs.servicedir}}"
+          image="${{steps.login-ecr.outputs.registry}}/${{inputs.project}}-${{inputs.environments}}-${{inputs.servicedir}}:${{steps.meta.outputs.IMAGE_NUMBER}}"
           echo $image
