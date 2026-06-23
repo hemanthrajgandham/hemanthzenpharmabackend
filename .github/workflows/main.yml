@@ -67,14 +67,24 @@ jobs:
             p/owasp-top-ten
 
       - name: create cahce folder
-        run: mkdir -p ~/.dependency-check
+        run: mkdir -p ~/.dependency-check #ODC_DATA_DIR
          
       - name: Cache OWASP NVD database
         
         uses: actions/cache@v4
         with:
-          path: ~/.dependency-check
+          path: ~/.dependency-check #ODC_DATA_DIR
           key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.service-dir)) }}
           restore-keys: owasp-nvd-${{ runner.os }}-
+
+      - name: OWASP Dependency Check
+        uses: dependency-check/owasp-dependency-check-action@v8 
+        with:
+          scan: ${{ inputs.service-dir }}
+          format: ALL
+          out: ${{ inputs.service-dir }}/target/dependency-check-report
+          project: ${{ inputs.service-dir }}
+          failOnCVSS: 7
+          dataDirectory: ~/.dependency-check #ODC_DATA_DIR
 
      
