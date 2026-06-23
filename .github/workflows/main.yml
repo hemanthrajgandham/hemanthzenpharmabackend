@@ -78,7 +78,7 @@ jobs:
           restore-keys: owasp-nvd-${{ runner.os }}-
 
       - name: OWASP Dependency Check
-        uses: dependency-check/owasp-dependency-check-action@v8 
+        uses: dependency-check/dependency-check-action@main
         with:
           scan: ${{ inputs.service-dir }}
           format: ALL
