@@ -50,7 +50,7 @@ jobs:
            name: codeql results
            path: results
       - name: semgrep scan
-        uses: github/semgrep-action@v1
+        uses: semgrep/semgrep-action@v1
         with:
           config: >-
            - 'p/java'
