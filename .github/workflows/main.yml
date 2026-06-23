@@ -52,8 +52,8 @@ jobs:
       - name: semgrep scan
         uses: github/semgrep-action@v1
         with:
-          config:
-          - 'p/java'
-          - 'p/spring-boot'
-          - 'p/owasp-top-10'
+          config: >-
+           - 'p/java'
+           - 'p/spring-boot'
+           - 'p/owasp-top-10'
           output: semgrep-results.json       
