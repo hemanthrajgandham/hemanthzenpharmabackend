@@ -2,6 +2,12 @@ name: cicd pipeline
 on:
  workflow_dispatch:
    inputs:
+     project:
+       description: 'Project name'
+       required: true
+       type: string
+       default: pharma
+        
      environments:
        type: choice       
        options:
@@ -104,4 +110,10 @@ jobs:
           aws-region: us-east-1
       
       - name: login to ecr
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+      - name: docker build
+        id: docker-build
+        run: |
+          image= "${{steps.login-ecr.outputs.registry}}/${{inputs.project}}-${{inputs.environments}}-${{inputs.servicedir}}"
+          echo $image
