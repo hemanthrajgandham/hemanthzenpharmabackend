@@ -83,4 +83,4 @@ jobs:
          
          mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report 
         env:
-          nvd_api_key: ${{ secrets.NVD_API_KEY }}
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
