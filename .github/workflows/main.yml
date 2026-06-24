@@ -128,3 +128,4 @@ jobs:
           docker build --build-arg UID=2000 --build-arg GID=2000 -t image .
 
           echo "image=$IMAGE" >> GITHUB_OUTPUT
+          echo "${{steps.docker-build.outputs.$IMAGE}}"
