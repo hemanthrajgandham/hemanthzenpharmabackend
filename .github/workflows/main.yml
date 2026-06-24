@@ -170,5 +170,5 @@ jobs:
       - name: image push
         id: push
         run: |
-          docker push ${{steps.docker-build.outputs.IMAGE}}
+          docker push "${{steps.docker-build.outputs.IMAGE}}"
           
