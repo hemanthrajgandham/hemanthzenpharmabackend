@@ -26,6 +26,13 @@ permissions:
   contents: read
   security-events: write
 
+env:
+         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+         PROJECT: ${{ inputs.project }}
+         ENVIRONMENT: ${{ inputs.environments }}
+         SERVICE_DIR: ${{ inputs.servicedir }}
+         IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}  
+         IMAGE: ${{steps.docker-build.outputs.IMAGE}}
 
 
 jobs:
@@ -115,12 +122,7 @@ jobs:
       - name: docker build
         id: docker-build
         working-directory: ${{ inputs.servicedir }}
-        env:
-         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-         PROJECT: ${{ inputs.project }}
-         ENVIRONMENT: ${{ inputs.environments }}
-         SERVICE_DIR: ${{ inputs.servicedir }}
-         IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}        
+              
         run: |
           image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
           echo $image
@@ -129,4 +131,5 @@ jobs:
 
           echo "IMAGE=$image" >> $GITHUB_OUTPUT
       - name: image full name
-        run:  echo "${{steps.docker-build.outputs.IMAGE}}"   
+        run:  echo "$IMAGE"
+         
