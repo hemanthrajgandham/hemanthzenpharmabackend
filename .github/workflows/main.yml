@@ -170,7 +170,7 @@ jobs:
       - name: image push
         id: push
         run: |
-          IMAGE="{{steps.docker-build.outputs.IMAGE}}"
+          IMAGE="${{steps.docker-build.outputs.IMAGE}}"
           echo "$IMAGE"
           docker push "$IMAGE"
           DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE" | awk -F@ '{print $2}')
