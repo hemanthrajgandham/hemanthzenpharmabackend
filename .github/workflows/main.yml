@@ -149,7 +149,7 @@ jobs:
     
          severity: HIGH,CRITICAL # optional, default is UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
     # output format (table, json, template)
-         format: SARIF # optional, default is table
+         format: sarif # optional, default is table
     # use an existing template for rendering output (@/contrib/gitlab.tpl, @/contrib/junit.tpl, @/contrib/html.tpl)
          # writes results to a file with the specified file name
          output: trivy-results.SARIF # optional, default is 
