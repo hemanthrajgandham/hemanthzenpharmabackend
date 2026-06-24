@@ -166,3 +166,9 @@ jobs:
         with:
           sarif_file: trivy-results.sarif
           category: trivy-${{ inputs.service-name }}    
+
+      - name: image push
+        id: push
+        run: |
+          docker push ${{steps.docker-build.outputs.IMAGE}}
+          
