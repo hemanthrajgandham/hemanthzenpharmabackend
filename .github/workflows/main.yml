@@ -129,4 +129,4 @@ jobs:
 
           echo "image=$IMAGE" >> GITHUB_OUTPUT
       - name: image full name
-        run:  echo "${{steps.docker-build.outputs.$IMAGE}}"   
+        run:  echo "${{steps.docker-build.outputs.IMAGE}}"   
