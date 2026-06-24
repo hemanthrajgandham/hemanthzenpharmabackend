@@ -68,14 +68,15 @@ jobs:
         continue-on-error: false
         with:
          language: java
+         output: codeql-results.sarif
         
          
          ram: 4096
       - name: upload codeql results
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-sarif@v3
         with:
-         name: codeql results
-         path: results
+         sarif_file: codeql-results.sarif
+         category: codeql-${{inputs.servicedir}}
       - name: Semgrep SAST (java · owasp-top-ten)
         uses: semgrep/semgrep-action@v1
         continue-on-error: false
