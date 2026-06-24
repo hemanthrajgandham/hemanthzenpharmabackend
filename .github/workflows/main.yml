@@ -68,7 +68,7 @@ jobs:
         continue-on-error: false
         with:
          language: java
-         output: results
+        
          
          ram: 4096
       - name: upload codeql results
