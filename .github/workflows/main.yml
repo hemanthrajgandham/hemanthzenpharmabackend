@@ -25,6 +25,14 @@ permissions:
   id-token: write
   contents: read
   security-events: write
+
+env:
+    REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    PROJECT: ${{ inputs.project }}
+    ENVIRONMENT: ${{ inputs.environments }}
+    SERVICE_DIR: ${{ inputs.servicedir }}
+    IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -116,7 +124,7 @@ jobs:
         id: docker-build
         working-directory: ${{ inputs.servicedir }}
         run: |
-          image="${{steps.login-ecr.outputs.registry}}/${{inputs.project}}-${{inputs.environments}}-${{inputs.servicedir}}:${{steps.meta.outputs.IMAGE_NUMBER}}"
+          image="${{REGISTRY}}/${{PROJECT}}-${{ENVIRONMENT}}-${{SERVICE_DIR}}:${{IMAGE_NUMBER}}"
           echo $image
           
           docker build --build-arg UID=2000 --build-arg GID=2000 -t image .
