@@ -141,7 +141,7 @@ jobs:
     # Scan type to use for scanning vulnerability
          scan-type: image # optional, default is image
     # image reference (for backward compatibility)
-         image-ref: "{{steps.docker-build.outputs.IMAGE}}"# optional
+         image-ref: "${{steps.docker-build.outputs.IMAGE}}"# optional
     # reference of tar file to scan
    
          exit-code: 1 # optional
