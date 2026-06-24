@@ -152,7 +152,7 @@ jobs:
          format: sarif # optional, default is table
     # use an existing template for rendering output (@/contrib/gitlab.tpl, @/contrib/junit.tpl, @/contrib/html.tpl)
          # writes results to a file with the specified file name
-         output: trivy-results.SARIF # optional, default is 
+         output: trivy-results.sarif # optional, default is 
     # comma separated list of directories where traversal is skipped
     
     
