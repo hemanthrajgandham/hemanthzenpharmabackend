@@ -170,8 +170,9 @@ jobs:
       - name: image push
         id: push
         run: |
+          IMAGE="{{steps.docker-build.outputs.IMAGE}}"
           docker push "$IMAGE"
-          DIGEST=${docker inspect -f { index .RepoDigest 0}} $IMAGE |awk -f @ '{print 2}'} 
+          DIGEST=${docker inspect -f { index .Repo  Digest 0}} $IMAGE |awk -f @ '{print 2}'} 
           digest=$DIGEST >> $GITHUB_OUTPUT
       - name: name the digest
         run: echo "${{steps.push.outputs.digest}}"
