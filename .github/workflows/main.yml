@@ -92,7 +92,7 @@ jobs:
         run: ls -la $HOME/.dependency-check
 
       - name: OWASP Dependency Check
-        if: false
+        if: true
         working-directory: ${{ inputs.servicedir }}
         run: | 
          
