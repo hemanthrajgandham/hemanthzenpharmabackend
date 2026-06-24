@@ -117,3 +117,7 @@ jobs:
         run: |
           image="${{steps.login-ecr.outputs.registry}}/${{inputs.project}}-${{inputs.environments}}-${{inputs.servicedir}}:${{steps.meta.outputs.IMAGE_NUMBER}}"
           echo $image
+          cd ${{inputs.servicedir}}
+          docker build --build-arg UID=1000 --build-arg GID=1000 -t image .
+
+          echo "image=$IMAGE" >> GITHUB_OUTPUT
