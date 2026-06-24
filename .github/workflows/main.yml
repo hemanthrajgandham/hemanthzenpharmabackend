@@ -52,14 +52,17 @@ jobs:
          languages: java     
 
       - name: integration testing
+        working-directory: ${{inputs.servicedir}}
         run: |
-         cd auth-service
+         
          mvn verify 
       - name: upload reports
         uses: actions/upload-artifact@v7.0.1
+        
         with:
          name: jococo report
-         path: auth-service/target/site/jacoco/
+         path: target/site/jacoco/
+         working-directory: ${{inputs.servicedir}}
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         continue-on-error: false
@@ -81,7 +84,7 @@ jobs:
            p/java
            p/owasp-top-ten
 
-      - name: create cahce folder
+      - name: create cache folder
         run: mkdir -p ~/.dependency-check #ODC_DATA_DIR
         
       - name: Cache OWASP NVD database
@@ -91,8 +94,7 @@ jobs:
          path: ~/.dependency-check #ODC_DATA_DIR
          key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.servicedir)) }}
          restore-keys: owasp-nvd-${{ runner.os }}-
-      - name: Check cache contents
-        run: ls -la $HOME/.dependency-check
+    
 
       - name: OWASP Dependency Check
         if: false
@@ -130,4 +132,5 @@ jobs:
 
           echo "IMAGE=$image" >> $GITHUB_OUTPUT
       - name: image full name
-        run:  echo "${{steps.docker-build.outputs.IMAGE}}"   
+        run:  echo "${{steps.docker-build.outputs.IMAGE}}"  
+         
