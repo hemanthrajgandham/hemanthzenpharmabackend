@@ -133,4 +133,27 @@ jobs:
           echo "IMAGE=$image" >> $GITHUB_OUTPUT
       - name: image full name
         run:  echo "${{steps.docker-build.outputs.IMAGE}}"  
-         
+      - name: Aqua Security Trivy
+  # You may pin to the exact commit or the version.
+  # uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+    # Scan type to use for scanning vulnerability
+         scan-type: image # optional, default is image
+    # image reference (for backward compatibility)
+         image-ref: "{{steps.docker-build.output.IMAGE}}"# optional
+    # reference of tar file to scan
+   
+         exit-code: 1 # optional
+    # ignore unfixed vulnerabilities
+    
+         severity: HIGH,CRITICAL # optional, default is UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+    # output format (table, json, template)
+         format: SARIF # optional, default is table
+    # use an existing template for rendering output (@/contrib/gitlab.tpl, @/contrib/junit.tpl, @/contrib/html.tpl)
+         # writes results to a file with the specified file name
+         output: trivy-results.SARIF # optional, default is 
+    # comma separated list of directories where traversal is skipped
+    
+    
+    
