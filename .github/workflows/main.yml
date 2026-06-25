@@ -170,4 +170,4 @@ jobs:
       #- name: name the digest
       #  run: echo "${{steps.push.outputs.digest}}"
       - name: install cosign
-        uses: sigstore/cosign-install@v4.1.2
+        uses: sigstore/cosign-installer@v4.1.2
