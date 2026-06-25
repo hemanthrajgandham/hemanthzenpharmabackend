@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/_java-pr-check.yml  
     with:
      project: pharma
-     environment: dev
+     environments: dev
      servicedir: auth-service
       
  
