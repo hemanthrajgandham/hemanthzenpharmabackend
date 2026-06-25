@@ -20,7 +20,7 @@ on:
         description: short github run number
         value: ${{ jobs.image.outputs.IMAGE_NUMBER }}
       REGISTRY:
-        value: ${{ jobs.image.outputs.registry }}
+        value: ${{ jobs.image.outputs.REGISTRY }}
       PROJECT:
         value: ${{ inputs.project }}
       ENVIRONMENT:
@@ -56,11 +56,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
-      IMAGE: ${{steps.meta.outputs.IMAGE}}
+      IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
+      IMAGE: ${{steps.docker-build.outputs.IMAGE}}
    
      
     steps:
+      - name: checkout code
+        uses: actions/checkout@v4
       - name: aws credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -78,7 +80,7 @@ jobs:
           PROJECT: ${{ inputs.project }}
           ENVIRONMENT: ${{ inputs.environments }}
           SERVICE_DIR: ${{ inputs.servicedir }}
-          IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
+          IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
 
         run: |
           cd $SERVICE_DIR
@@ -102,7 +104,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results.sarif
-          category: trivy-${{ inputs.service-name }}
+          category: trivy-${{ inputs.servicedir }}
 
       - name: install cosign
         uses: sigstore/cosign-installer@v4.1.2
@@ -113,7 +115,7 @@ jobs:
           PROJECT: ${{ inputs.project }}
           ENVIRONMENT: ${{ inputs.environments }}
           SERVICE_DIR: ${{ inputs.servicedir }}
-          IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
+          IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
         run: |
           image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
           cosign sign --yes "${image}"
