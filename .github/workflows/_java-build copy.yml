@@ -9,34 +9,18 @@ on:
        default: pharma
         
      environments:
-       description: "environment name"     
-       type: string
-       default: dev
+       type: choice       
+       options:
+         - dev
+         - qa
 
      servicedir:
        description: 'Service directory'
        required: true
-       type: string
-   
-   outputs:
-      IMAGE_NUMBER:
-        description: short github run number
-        value: ${{ steps.meta.outputs.IMAGE_NUMBER }}
-      REGISTRY: 
-        value: ${{ steps.login-ecr.outputs.registry }}
-      PROJECT: 
-        value: ${{ inputs.project }}
-      ENVIRONMENT: 
-        value: ${{ inputs.environments }}
-      SERVICE_DIR: 
-        value: ${{ inputs.servicedir }}
-   secrets:
-     AWS_ACCOUNT_ID:
-       required: true 
-     NVD_API_KEY:
-       required: false
-    
-         
+       type: choice
+       options:
+          - auth-service
+          
 
 permissions:
   id-token: write
