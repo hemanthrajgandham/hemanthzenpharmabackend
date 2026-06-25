@@ -48,7 +48,7 @@ jobs:
     uses: ./.github/workflows/_java-pr-check.yml
     with:
        project: ${{inputs.project}}
-       environment: ${{inputs.environments}}
+       environments: ${{inputs.environments}}
        servicedir: ${{inputs.servicedir}}
 
  image:
