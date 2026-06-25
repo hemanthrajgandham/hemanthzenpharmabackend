@@ -105,7 +105,15 @@ jobs:
         with:
           sarif_file: trivy-results.sarif
           category: trivy-${{ inputs.servicedir }}
-
+      - name: image push
+        id: push
+        run: |
+          IMAGE="${{steps.docker-build.outputs.IMAGE}}"
+          echo "$IMAGE"
+          docker push "$IMAGE"
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE" | awk -F@ '{print $2}')
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
+          echo "Pushed: $IMAGE  (digest: $DIGEST)"
       - name: install cosign
         uses: sigstore/cosign-installer@v4.1.2
 
