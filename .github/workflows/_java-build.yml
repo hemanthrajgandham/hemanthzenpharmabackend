@@ -43,7 +43,7 @@ permissions:
 
 
 jobs:
-  build:
+ build:
     steps:
       - name: pr check cycle
         uses: ./.github/workflows/_java-pr-check.yml
@@ -52,7 +52,7 @@ jobs:
           environment: ${{inputs.environments}}
           servicedir: ${{inputs.servicedir}}
 
-  image:
+ image:
     needs: build
     runs-on: ubuntu-latest
     outputs:
