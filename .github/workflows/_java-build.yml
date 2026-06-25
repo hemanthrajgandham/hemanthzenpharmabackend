@@ -1,6 +1,6 @@
 name: cicd pipeline
 on:
- workflow_dispatch:
+ workflow_call:
    inputs:
      project:
        description: 'Project name'
@@ -13,6 +13,7 @@ on:
        options:
          - dev
          - qa
+
      servicedir:
        description: 'Service directory'
        required: true
