@@ -20,13 +20,15 @@ on:
         description: short github run number
         value: ${{ jobs.image.outputs.IMAGE_NUMBER }}
       REGISTRY:
-        value: ${{ jobs.image.outputs.registry }}
+        value: ${{ jobs.image.outputs.REGISTRY }}
       PROJECT:
         value: ${{ inputs.project }}
       ENVIRONMENT:
         value: ${{ inputs.environments }}
       SERVICE_DIR:
         value: ${{ inputs.servicedir }}
+      IMAGE:
+       value: ${{jobs.image.outputs.IMAGE}}
     secrets:
       AWS_ACCOUNT_ID:
         required: true
@@ -48,19 +50,22 @@ jobs:
     uses: ./.github/workflows/_java-pr-check.yml
     with:
        project: ${{inputs.project}}
-       environment: ${{inputs.environments}}
+       environments: ${{inputs.environments}}
        servicedir: ${{inputs.servicedir}}
+    secrets: inherit
 
  image:
     needs: build
     runs-on: ubuntu-latest
     outputs:
       REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
-      IMAGE: ${{steps.meta.outputs.IMAGE}}
+      IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
+      IMAGE: ${{steps.docker-build.outputs.IMAGE}}
    
      
     steps:
+      - name: checkout code
+        uses: actions/checkout@v4
       - name: aws credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -69,6 +74,11 @@ jobs:
       - name: login to ecr
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+      - name: download jar
+        uses: actions/download-artifact@v4
+        with:
+          name: app.jar
+          path: ${{inputs.servicedir}}/target
 
       - name: docker build
         id: docker-build
@@ -78,8 +88,10 @@ jobs:
           PROJECT: ${{ inputs.project }}
           ENVIRONMENT: ${{ inputs.environments }}
           SERVICE_DIR: ${{ inputs.servicedir }}
-          IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
+          IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
+
         run: |
+          #cd $SERVICE_DIR
           image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
           echo $image
           docker build --build-arg UID=2000 --build-arg GID=2000 -t $image .
@@ -100,8 +112,16 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results.sarif
-          category: trivy-${{ inputs.service-name }}
-
+          category: trivy-${{ inputs.servicedir }}
+      - name: image push
+        id: push
+        run: |
+          IMAGE="${{steps.docker-build.outputs.IMAGE}}"
+          echo "$IMAGE"
+          docker push "$IMAGE"
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE" | awk -F@ '{print $2}')
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
+          echo "Pushed: $IMAGE  (digest: $DIGEST)"
       - name: install cosign
         uses: sigstore/cosign-installer@v4.1.2
 
@@ -111,7 +131,7 @@ jobs:
           PROJECT: ${{ inputs.project }}
           ENVIRONMENT: ${{ inputs.environments }}
           SERVICE_DIR: ${{ inputs.servicedir }}
-          IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
+          IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
         run: |
           image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
           cosign sign --yes "${image}"
