@@ -21,9 +21,9 @@ on:
    outputs:
       IMAGE_NUMBER:
         description: short github run number
-        value: ${{ steps.meta.outputs.IMAGE_NUMBER }}
+        value: ${{ jobs.build.outputs.IMAGE_NUMBER }}
       REGISTRY: 
-        value: ${{ steps.login-ecr.outputs.registry }}
+        value: ${{ jobs.build.outputs.registry }}
       PROJECT: 
         value: ${{ inputs.project }}
       ENVIRONMENT: 
