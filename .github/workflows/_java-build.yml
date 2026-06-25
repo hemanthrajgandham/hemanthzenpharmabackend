@@ -50,6 +50,7 @@ jobs:
        project: ${{inputs.project}}
        environments: ${{inputs.environments}}
        servicedir: ${{inputs.servicedir}}
+    secrets: inherit
 
  image:
     needs: build
