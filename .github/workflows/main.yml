@@ -171,3 +171,13 @@ jobs:
       #  run: echo "${{steps.push.outputs.digest}}"
       - name: install cosign
         uses: sigstore/cosign-installer@v4.1.2
+
+      - name: sign image
+        env:
+         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+         PROJECT: ${{ inputs.project }}
+         ENVIRONMENT: ${{ inputs.environments }}
+         SERVICE_DIR: ${{ inputs.servicedir }}
+        run: |
+         image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
+          cosign sign --yes "${image}"
