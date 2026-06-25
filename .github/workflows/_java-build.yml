@@ -27,6 +27,8 @@ on:
         value: ${{ inputs.environments }}
       SERVICE_DIR:
         value: ${{ inputs.servicedir }}
+      IMAGE:
+       value: ${{jobs.image.outputs.IMAGE}}
     secrets:
       AWS_ACCOUNT_ID:
         required: true
