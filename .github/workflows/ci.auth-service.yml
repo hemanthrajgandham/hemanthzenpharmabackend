@@ -1,0 +1,22 @@
+name: deploy to dev
+on:
+  push: 
+   branches:
+    ["develop","release/**"]
+   paths:
+   - 'auth-service/**'
+   - '.github/workflows/ci.auth-service.yml'
+permissions:
+ id-token: write
+ contents: read
+ security-events: write
+ actions: read
+jobs:
+ name: build and push
+ uses: "./.github/workflows/_java-build.yml"
+ with:
+   project: pharma
+   environment: dev
+   servicedir: auth-service
+ secrets: inherit
+      
