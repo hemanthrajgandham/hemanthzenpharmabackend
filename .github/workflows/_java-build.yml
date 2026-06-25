@@ -74,6 +74,11 @@ jobs:
       - name: login to ecr
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+      - name: download jar
+        uses: actions/download-artifact@v7.0.1
+        with:
+          name: app.jar
+          path: ${{inputs.servicedir}}/target
 
       - name: docker build
         id: docker-build
