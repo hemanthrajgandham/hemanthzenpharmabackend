@@ -178,6 +178,7 @@ jobs:
          PROJECT: ${{ inputs.project }}
          ENVIRONMENT: ${{ inputs.environments }}
          SERVICE_DIR: ${{ inputs.servicedir }}
+         IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}  
         run: |
          image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
           cosign sign --yes "${image}"
