@@ -17,7 +17,7 @@ jobs:
    uses: "./.github/workflows/_java-build.yml"
    with:
     project: pharma
-    environment: dev
+    environments: dev
     servicedir: auth-service
    secrets: inherit
       
