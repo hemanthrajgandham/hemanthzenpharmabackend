@@ -77,7 +77,7 @@ jobs:
 
       - name: docker build
         id: docker-build
-        #working-directory: ${{ inputs.servicedir }}
+        working-directory: ${{ inputs.servicedir }}
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           PROJECT: ${{ inputs.project }}
@@ -86,7 +86,7 @@ jobs:
           IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
 
         run: |
-          cd $SERVICE_DIR
+          #cd $SERVICE_DIR
           image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
           echo $image
           docker build --build-arg UID=2000 --build-arg GID=2000 -t $image .
