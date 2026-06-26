@@ -9,6 +9,8 @@ permissions:
 jobs:
   build:
    runs-on: ubuntu-22.04
+   outputs:
+     imagenumber: ${{steps.imagenumber.outputs.image_sha}}
    steps:
     - name: checkout code
       uses: actions/checkout@v7.0.0
@@ -26,6 +28,10 @@ jobs:
         echo image_sha="sha-${IMAGE_NUMBER}">> $GITHUB_OUTPUT
     - name: print number
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
+    - name: codeql install
+      uses: actions/codeql-install@v1
+      
+      
    
 
 
