@@ -13,9 +13,9 @@ jobs:
      imagenumber: ${{steps.imagenumber.outputs.image_sha}}
    steps:
     - name: checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v4
     - name: setup java
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -29,7 +29,7 @@ jobs:
     - name: print number
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
-      uses: github/codeql-action/init@v5
+      uses: github/codeql-action/init@v1
       with:
        languages: java
     - name: build
@@ -37,12 +37,12 @@ jobs:
         cd auth-service
         mvn verify
     - name: upload
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v4
       with:
         name: authservice
         path: auth-service/target
     - name: analyze codeql
-      uses: github/codeql-action/analyze@v5
+      uses: github/codeql-action/analyze@v1
       continue-on-error: false
       with:
        severity: HIGH,CRITICAL
