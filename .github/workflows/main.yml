@@ -17,7 +17,8 @@ jobs:
       run: |
         IMAGE_NUMBER="${GITHUB_SHA::7}" 
         echo "image_sha=IMAGE_NUMBER" >> $GITHUB_OUTPUT
-        echo "${{steps.imagenumber.outputs.image_sha}}"
+    - name: print number
+      run: echo "${{steps.imagenumber.outputs.image_sha}}"
    
 
 
