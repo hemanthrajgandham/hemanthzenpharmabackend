@@ -34,6 +34,9 @@ jobs:
       run: |
         cd auth-service
         mvn verify 
+    - name: analyze codeql
+      uses: github/codeql-action/analyze@v3
+      continue-on-error: false
       
       
    
