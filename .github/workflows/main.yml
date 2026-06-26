@@ -40,7 +40,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
       continue-on-error: false
     - name: upload file
-      uses: actions/upload@v3
+      uses: actions/upload-artifact@v3
       
       
    
