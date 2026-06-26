@@ -33,7 +33,10 @@ jobs:
       with:
        languages: java
     - name: autobuild
+      
       uses: github/codeql-action/autobuild@v3
+      with:
+         path: auth-service
     - name: analyze codeql
       uses: github/codeql-action/analyze@v3
       continue-on-error: false
