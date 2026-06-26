@@ -36,11 +36,14 @@ jobs:
       run: |
         cd auth-service
         mvn verify
+    - name: upload
+      uses: actions/upload-artifact@v3
     - name: analyze codeql
       uses: github/codeql-action/analyze@v3
       continue-on-error: false
-    - name: upload file
-      uses: github/codeql-action/upload-sarif@v3
+      with:
+       severity: HIGH,CRITICAL
+  
       
       
    
