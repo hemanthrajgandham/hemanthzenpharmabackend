@@ -32,10 +32,8 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
        languages: java
-    - name: maven package
-      run: |
-        cd auth-service
-        mvn verify 
+    - name: autobuild
+      uses: github/codeql-action/autobuild@v3
     - name: analyze codeql
       uses: github/codeql-action/analyze@v3
       continue-on-error: false
