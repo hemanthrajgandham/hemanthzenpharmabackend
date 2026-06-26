@@ -8,8 +8,10 @@ permissions:
  security-events: write
 jobs:
   build:
-   name: checkout code
-   uses: actions/checkout@v4
+   runs-on: ubuntu-22.04
+   steps:
+    - name: checkout code
+      uses: actions/checkout@v7.0.0
    
 
 
