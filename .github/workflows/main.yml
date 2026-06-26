@@ -32,6 +32,7 @@ jobs:
       uses: github/codeql-action/init@v3
     - name: maven package
       run: |
+        cd auth-service
         mvn verify 
       
       
