@@ -38,6 +38,9 @@ jobs:
         mvn verify
     - name: upload
       uses: actions/upload-artifact@v3
+      with:
+        name: authservice
+        path: auth-service/target
     - name: analyze codeql
       uses: github/codeql-action/analyze@v3
       continue-on-error: false
