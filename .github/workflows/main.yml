@@ -29,7 +29,7 @@ jobs:
     - name: print number
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
-      uses: github/codeql-init@v1
+      uses: github/codeql-action/init@v3
       
       
    
