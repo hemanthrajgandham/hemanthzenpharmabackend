@@ -30,6 +30,9 @@ jobs:
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
       uses: github/codeql-action/init@v3
+    - name: maven package
+      run: |
+        mvn verify 
       
       
    
