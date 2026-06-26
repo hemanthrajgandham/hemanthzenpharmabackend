@@ -12,6 +12,12 @@ jobs:
    steps:
     - name: checkout code
       uses: actions/checkout@v7.0.0
+    - name: get the github run number
+      id: imagenumber
+      run: |
+        IMAGE_NUMBER="${GITHUB_SHA::7}" 
+        echo "image_sha=IMAGE_NUMBER" >> $GITHUB_OUTPUT
+        echo "${{steps.imagenumber.outputs.image_sha}}"
    
 
 
