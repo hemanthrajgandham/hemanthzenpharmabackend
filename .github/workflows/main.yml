@@ -30,6 +30,8 @@ jobs:
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
       uses: github/codeql-action/init@v3
+      with:
+       languages: java
     - name: maven package
       run: |
         cd auth-service
