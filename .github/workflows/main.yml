@@ -1,0 +1,16 @@
+name: hemanth cicd pipeline
+on:
+ push:
+  branches: ["main"]
+permissions: 
+ contents: read
+ id-token: write
+ security-events: write
+jobs:
+  build:
+   name: checkout code
+   uses: actions/checkout@v4
+   
+
+
+  
