@@ -32,14 +32,13 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
        languages: java
-    - name: autobuild
-      
-      uses: github/codeql-action/autobuild@v3
-      with:
-         path: auth-service
-    - name: analyze codeql
-      uses: github/codeql-action/analyze@v3
-      continue-on-error: false
+    - name: build
+      run: |
+        cd auth-service
+        mvn verify
+     - name: analyze codeql
+       uses: github/codeql-action/analyze@v3
+       continue-on-error: false
       
       
    
