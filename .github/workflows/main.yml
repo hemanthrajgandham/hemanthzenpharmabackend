@@ -28,8 +28,8 @@ jobs:
     - name: get the github run number
       id: imagenumber
       run: |
-        IMAGE_NUMBER="${GITHUB_SHA::7}" 
-        echo image_sha="sha-${IMAGE_NUMBER}">> $GITHUB_OUTPUT
+       
+        echo image_sha="sha-${GITHUB_SHA::7}">> $GITHUB_OUTPUT
     - name: print number
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
