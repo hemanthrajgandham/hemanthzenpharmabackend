@@ -94,8 +94,8 @@ jobs:
     - name: docker build
       run: |
         cd auth-service
-        echo "${{steps.login-ecr.outputs.REGISTRY}}/pharma-dev-auth-service:${imagenumber}"
-        docker build -t "${{steps.login-ecr.outputs.REGISTRY}}/pharma-dev-auth-service:${imagenumber}" .
+        echo "${{steps.login-ecr.outputs.REGISTRY}}/pharma-dev-auth-service:${{steps.imagenumber.outputs.image_sha}}"
+        docker build -t "${{steps.login-ecr.outputs.REGISTRY}}/pharma-dev-auth-service:${{steps.imagenumber.outputs.image_sha}}" .
       
         
       
