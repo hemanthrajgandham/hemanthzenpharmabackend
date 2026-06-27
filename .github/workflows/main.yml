@@ -96,8 +96,10 @@ jobs:
       run: |
         cd auth-service
         echo "${{steps.login-ecr.outputs.REGISTRY}}/dev-auth-service:${{steps.imagenumber.outputs.image_sha}}"
-        docker build -t "${registry}/dev-auth-service:${imagenumber}"
+        docker build -t "${registry}/dev-auth-service:${imagenumber}" .
         echo "${IMAGE}"
+    - name: push
+      run: docker push ${IMAGE}
         
         
         
