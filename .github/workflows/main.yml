@@ -104,6 +104,8 @@ jobs:
         DIGEST= $(docker inspect --format='{index .RepoDigests 0}' "${IMAGE}"|awk -F@ '{print $2}')
         echo digest=$DIGEST >> $GITHUB_OUTPUT
         echo ${digest}
+    - name: install cosign
+      uses: sigstore/cosign-installer@v4
 
 
         
