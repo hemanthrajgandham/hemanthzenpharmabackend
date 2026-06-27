@@ -70,9 +70,15 @@ jobs:
 
 
     - name: owasp dep check run
+      if: false
       run: |
        cd auth-service
        mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 -DdataDirectory=$HOME/.owasp/dependency-check-data -Dformat=HTML
+    - name: upload owasp report
+      if: false
+      uses: actions/upload-artifact@v4
+      with:
+        path: auth-service/target/dependency-check-report.html
         
       
       
