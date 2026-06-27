@@ -46,6 +46,13 @@ jobs:
       continue-on-error: false
       with:
        severity: HIGH,CRITICAL
+
+    - name: semgrep
+      uses: github/semgrep-action/init@v1
+      with: 
+       config: |
+        p/owasp-top-ten
+        p/java
   
       
       
