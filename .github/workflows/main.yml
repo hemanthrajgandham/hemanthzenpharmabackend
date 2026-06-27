@@ -14,6 +14,7 @@ jobs:
    outputs:
      imagenumber: ${{steps.imagenumber.outputs.image_sha}}
      registry: ${{steps.login-ecr.outputs.REGISTRY}}
+     digest: ${{steps.docker-build.outputs.digest}}
     
    steps:
     - name: checkout code
@@ -92,14 +93,17 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v2
  
     - name: docker build
+      id: docker-build
       run: |
         cd auth-service
         IMAGE="${{steps.login-ecr.outputs.REGISTRY}}/dev/auth-service:${{steps.imagenumber.outputs.image_sha}}"
         echo "${IMAGE}"
         docker build -t "${IMAGE}" .
         docker push "${IMAGE}"
-        DIGEST= ${docker inspect --format='{{index.RepoDigests 0}}' "${IMAGE}"|awk -F@ '{print 2}'}
-        echo $DIGEST
+        
+        DIGEST= ${docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE}"|awk -F@ '{print 2}'}
+        echo digest=$DIGEST >> $GITHUB_OUTPUT
+        echo ${digest}
 
 
         
