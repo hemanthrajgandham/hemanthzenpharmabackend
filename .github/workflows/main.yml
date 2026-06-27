@@ -32,7 +32,7 @@ jobs:
     - name: print number
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
        languages: java
        queries: security-extended
@@ -44,9 +44,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: authservice
-        path: auth-service/target/site/jaccoco/jacoco.xml
+        path: auth-service/site/jacoco/jacoco.xml
     - name: analyze codeql
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4
       continue-on-error: false
       with:
         category: /language:java
