@@ -48,7 +48,7 @@ jobs:
        severity: HIGH,CRITICAL
 
     - name: semgrep
-      uses: github/semgrep-action/init@v1
+      uses: semgrep/semgrep-action@v1
       with: 
        config: |
         p/owasp-top-ten
