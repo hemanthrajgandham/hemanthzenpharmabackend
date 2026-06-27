@@ -14,7 +14,7 @@ jobs:
    outputs:
      imagenumber: ${{steps.imagenumber.outputs.image_sha}}
      registry: ${{steps.login-ecr.outputs.REGISTRY}}
-     IMAGE: "${registry}/dev/auth-service:${imagenumber}"
+     IMAGE: "${registry}/dev/auth-service"
    steps:
     - name: checkout code
       uses: actions/checkout@v4
@@ -95,11 +95,11 @@ jobs:
     - name: docker build
       run: |
         cd auth-service
-        echo "${IMAGE}"
-        docker build -t "${IMAGE}" .
+        echo "${IMAGE}:${imagenumber}"
+        docker build -t "${IMAGE}:${imagenumber}" .
         echo "${IMAGE}"
     - name: push
-      run: docker push ${IMAGE}
+      run: docker push "${IMAGE}:${imagenumber}"
         
         
         
