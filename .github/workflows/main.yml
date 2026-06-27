@@ -43,7 +43,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: authservice
-        path: auth-service/target
+        path: auth-service/target/site/jacoco.xml
     - name: analyze codeql
       uses: github/codeql-action/analyze@v1
       continue-on-error: false
@@ -60,6 +60,15 @@ jobs:
         p/owasp-top-ten
         p/java
        severity: HIGH,CRITICAL
+    - name: cache nvd owasp db
+      uses: actions/cache@v4
+      
+      with:
+       path: $HOME/.owasp/dependency-check-data
+       keys: owasp-nvd-${{runner.os}}-${{hashFiles(format('{0}/pom.xml',auth-service))}}
+       restore-keys: owasp-nvd-${{runner.os}}
+      
+      
   
       
       
