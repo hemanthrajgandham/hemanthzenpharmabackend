@@ -79,6 +79,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         path: auth-service/target/dependency-check-report.html
+
+    - name: aws configure
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/pharma-dev-github-action-role
         
       
       
