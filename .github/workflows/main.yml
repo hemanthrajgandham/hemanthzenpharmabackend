@@ -94,9 +94,11 @@ jobs:
     - name: docker build
       run: |
         cd auth-service
-        IMAGE="${repository}/dev/auth-service:${imagenmber}"
+        IMAGE="${{steps.login-ecr.outputs.REPOSITORY}}/dev/auth-service:${{steps.imagenumber.outputs.image_sha}"
         echo "${IMAGE}"
-        #docker build -t "${IMAGE}" .
+        docker build -t "${IMAGE}" .
+
+        
     
         
         
