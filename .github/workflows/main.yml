@@ -49,10 +49,12 @@ jobs:
 
     - name: semgrep
       uses: semgrep/semgrep-action@v1
+      continue-on-error: false
       with: 
        config: |
         p/owasp-top-ten
         p/java
+       severity: HIGH,CRITICAL
   
       
       
