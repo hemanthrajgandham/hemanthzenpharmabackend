@@ -97,6 +97,7 @@ jobs:
         IMAGE="${{steps.login-ecr.outputs.REGISTRY}}/dev/auth-service:${{steps.imagenumber.outputs.image_sha}}"
         echo "${IMAGE}"
         docker build -t "${IMAGE}" .
+        docker push "${IMAGE}"
 
         
     
