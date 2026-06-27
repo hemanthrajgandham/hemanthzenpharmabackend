@@ -95,8 +95,8 @@ jobs:
     - name: docker build
       run: |
         cd auth-service
-        echo "${registry}/dev/auth-service:${imagenumber}"
-        docker build -t "${registry}/dev/auth-service:${imagenumber}" .
+        echo "${IMAGE}"
+        docker build -t "${IMAGE}" .
         echo "${IMAGE}"
     - name: push
       run: docker push ${IMAGE}
