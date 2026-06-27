@@ -106,6 +106,9 @@ jobs:
         echo ${digest}
     - name: install cosign
       uses: sigstore/cosign-installer@v3
+    - name: sign
+      
+      run: cosign sign --yes "${{steps.login-ecr.outputs.REGISTRY}}/dev/auth-service@${{steps.docker-build.outputs.digest}}"
 
 
         
