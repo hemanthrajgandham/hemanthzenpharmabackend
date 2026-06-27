@@ -13,6 +13,7 @@ jobs:
      fail-fast: true
    outputs:
      imagenumber: ${{steps.imagenumber.outputs.image_sha}}
+     outputs: ${{steps.login-ecr.outputs.REGISTRY}}
    steps:
     - name: checkout code
       uses: actions/checkout@v4
@@ -85,6 +86,12 @@ jobs:
       with:
         aws-region: us-east-1
         role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/pharma-dev-github-action-role
+    - name: login to ecr
+      id: login-ecr
+      uses: aws-actions/ecr-login@v4
+    - name : print ecr name
+      run: echo "${{steps.login-ecr.outputs.REGISTRY}}"
+      
         
       
       
