@@ -100,10 +100,21 @@ jobs:
         echo "${IMAGE}"
         docker build -t "${IMAGE}" .
         docker push "${IMAGE}"
+        echo image="${IMAGE}" >> $GITHUB_OUTPUT
         
         DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE}"|awk -F@ '{print $2}')
         echo digest=$DIGEST >> $GITHUB_OUTPUT
         echo ${digest}
+    - name: image scanning
+      uses: aquasecurity/trivy-action@v0.36.0
+      with:
+        image-ref: ${{steps.docker-build.outputs.image}}
+        ignore-unfixed: true
+        format: sarif
+        output: trivy-results.sarif
+        severity: HIGH,CRITICAL
+        exit-code: 0
+        
     - name: install cosign
       uses: sigstore/cosign-installer@v3
     - name: sign
