@@ -13,7 +13,8 @@ jobs:
      fail-fast: true
    outputs:
      imagenumber: ${{steps.imagenumber.outputs.image_sha}}
-     outputs: ${{steps.login-ecr.outputs.REGISTRY}}
+     registry: ${{steps.login-ecr.outputs.REGISTRY}}
+     IMAGE: "${registry}/dev-auth-service:${imagenumber}"
    steps:
     - name: checkout code
       uses: actions/checkout@v4
@@ -94,8 +95,12 @@ jobs:
     - name: docker build
       run: |
         cd auth-service
-        echo "${{steps.login-ecr.outputs.REGISTRY}}/pharma-dev-auth-service:${{steps.imagenumber.outputs.image_sha}}"
-        docker build -t "${{steps.login-ecr.outputs.REGISTRY}}/pharma-dev-auth-service:${{steps.imagenumber.outputs.image_sha}}" .
+        echo "${{steps.login-ecr.outputs.REGISTRY}}/dev-auth-service:${{steps.imagenumber.outputs.image_sha}}"
+        docker build -t "${registry}/dev-auth-service:${imagenumber}"
+        echo "${IMAGE}"
+        
+        
+        
       
         
       
