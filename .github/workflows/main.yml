@@ -32,7 +32,7 @@ jobs:
     - name: print number
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
        languages: java
        queries: security-extended
@@ -46,7 +46,7 @@ jobs:
         name: authservice
         path: auth-service/target/site/jacoco.xml
     - name: analyze codeql
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v2
       continue-on-error: false
       with:
         category: /language:java
@@ -88,7 +88,7 @@ jobs:
         role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/pharma-dev-github-action-role
     - name: login to ecr
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v4
+      uses: aws-actions/amazon-ecr-login@v2
     - name : print ecr name
       run: echo "${{steps.login-ecr.outputs.REGISTRY}}"
       
