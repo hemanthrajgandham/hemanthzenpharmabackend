@@ -9,13 +9,15 @@ permissions:
 jobs:
   build:
    runs-on: ubuntu-22.04
+   strategy:
+     fail-fast: true
    outputs:
      imagenumber: ${{steps.imagenumber.outputs.image_sha}}
    steps:
     - name: checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
     - name: setup java
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -29,26 +31,29 @@ jobs:
     - name: print number
       run: echo "${{steps.imagenumber.outputs.image_sha}}"
     - name: codeql install
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v3
       with:
        languages: java
+       queries: security-extended
     - name: build
       run: |
         cd auth-service
         mvn verify
     - name: upload
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: authservice
         path: auth-service/target
     - name: analyze codeql
-      uses: github/codeql-action/analyze@v1
+      uses: github/codeql-action/analyze@v3
       continue-on-error: false
       with:
-       severity: HIGH,CRITICAL
+        category: /language:java
+        severity: HIGH,CRITICAL
+      
 
     - name: semgrep
-      uses: semgrep/semgrep-action@v1
+      uses: semgrep/semgrep-action@v2
       continue-on-error: false
       with: 
        config: |
