@@ -65,7 +65,7 @@ jobs:
       
       with:
        path: $HOME/.owasp/dependency-check-data
-       keys: owasp-nvd-${{runner.os}}-${{hashFiles(format('{0}/pom.xml',auth-service))}}
+       keys: owasp-nvd-${{runner.os}}-${{hashFiles(format('{0}/pom.xml','auth-service'))}}
        restore-keys: owasp-nvd-${{runner.os}}
       
       
