@@ -45,7 +45,7 @@ permissions:
 
 
 jobs:
- build:
+ buildpr:
     name: pr check cycle
     uses: ./.github/workflows/_java-pr-check.yml
     with:
