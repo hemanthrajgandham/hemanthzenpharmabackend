@@ -18,6 +18,22 @@
      project: pharma
      environments: dev
      servicedir: auth-service
+   deploy:
+    name: deploy to dev
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+      with:
+       repository:  hemanthrajgandham/zen-gitops
+       token: "${{secrets.GITOPS_TOKEN}}"
+       path: _gitops
+    - name: get image tag
+       
+      run: echo "${{needs.build.outputs.IMAGE_NUMBER}}"
+        
+    
    
   
  
