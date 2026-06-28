@@ -25,10 +25,13 @@ jobs:
    needs: buildandpush
    steps:
    - name: print the image number
-     run: echo "${{needs.buildandpush.outputs.IMAGE_NUMBER}}"     
+     run: echo "${{needs.buildandpush.outputs.IMAGE_NUMBER}}" 
+
    - name: checkout the gitops
      uses: actions/checkout@v4
      with:
       repository: hemanthrajgandham/zen-gitops
       path: _gitops
       token: "${{secrets.GITOPS_TOKEN}}"
+   - name: update the yaml
+     run: yq -e '.image.tag= "${{needs.buildandpush.outputs.IMAGE_NUMBER}}"' -i _gitops/envs/dev/values-auth-service.yml
