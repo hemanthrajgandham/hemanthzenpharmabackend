@@ -34,4 +34,12 @@ jobs:
       path: _gitops
       token: "${{secrets.GITOPS_TOKEN}}"
    - name: update the yaml
-     run: yq eval '.image.tag= "${{needs.buildandpush.outputs.IMAGE_NUMBER}}"' -i _gitops/envs/dev/values-auth-service.yaml
+     run: | 
+      IMAGE_TAG="${{needs.buildandpush.outputs.IMAGE_NUMBER}}
+      yq eval '.image.tag= "${{needs.buildandpush.outputs.IMAGE_NUMBER}}"' -i _gitops/envs/dev/values-auth-service.yaml
+      cd _gitops
+      git add .
+      git config user.name  "github-actions[bot]"
+      git config user.email "github-actions[bot]@users.noreply.github.com"
+      git commit -m "ci(dev): update auth-service → ${IMAGE_TAG}"
+      git push
