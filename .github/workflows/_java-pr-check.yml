@@ -1,125 +1,123 @@
 name: Reusable — Java PR Check (no Docker)
-on:
- workflow_call:
-   inputs:
-     project:
-       description: 'Project name'
-       required: true
-       type: string
-       default: pharma
-        
-     environments:
-       description: "environment name"     
-       type: string
-       default: dev
 
-     servicedir:
-       description: 'Service directory'
-       required: true
-       type: string
-   
-   outputs:
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: 'Project name'
+        required: true
+        type: string
+        default: pharma
+
+      environments:
+        description: "environment name"
+        type: string
+        default: dev
+
+      servicedir:
+        description: 'Service directory'
+        required: true
+        type: string
+
+    outputs:
       IMAGE_NUMBER:
         description: short github run number
         value: ${{ jobs.build.outputs.IMAGE_NUMBER }}
-      
-      PROJECT: 
+
+      PROJECT:
         value: ${{ inputs.project }}
-      ENVIRONMENT: 
+
+      ENVIRONMENT:
         value: ${{ inputs.environments }}
-      SERVICE_DIR: 
+
+      SERVICE_DIR:
         value: ${{ inputs.servicedir }}
-   secrets:
-     NVD_API_KEY:
-       required: false
-    
-         
+
+    secrets:
+      NVD_API_KEY:
+        required: false
 
 permissions:
   id-token: write
   contents: read
   security-events: write
 
-
-
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     outputs:
       IMAGE_NUMBER: ${{ steps.meta.outputs.IMAGE_NUMBER }}
+
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: setup java
+
+      - name: Setup Java
         uses: actions/setup-java@v5
         with:
-         distribution: 'temurin'
-         java-version: '17'
-         cache: 'maven'
-      - name: set image number based on github run number
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Set image number
         id: meta
         run: echo "IMAGE_NUMBER=sha-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Print image number
         run: echo "Image number is ${{ steps.meta.outputs.IMAGE_NUMBER }}"
-     
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-         languages: java     
+          languages: java
 
-      - name: integration testing
-        working-directory: ${{inputs.servicedir}}
-        run: |
-         
-         mvn verify 
-      - name: upload reports
-        uses: actions/upload-artifact@v7.0.1
-        
+      - name: Integration testing
+        working-directory: ${{ inputs.servicedir }}
+        run: mvn verify
+
+      - name: Upload JaCoCo reports
+        uses: actions/upload-artifact@v4
         with:
-         name: jococo report
-         path: ${{inputs.servicedir}}/target/site/jacoco/
-          
-      - name: upload jar
-        uses: actions/upload-artifact@v7.0.1
+          name: jacoco-report
+          path: ${{ inputs.servicedir }}/target/site/jacoco/
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
         with:
           name: app.jar
-          path: ${{inputs.servicedir}}/target/*.jar
-          
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        continue-on-error: false
-        with:
-         language: java
-        
-        
-   
-     
-      - name: Semgrep SAST (java · owasp-top-ten)
-        uses: semgrep/semgrep-action@v1
-        continue-on-error: false
-        with:
-         config: >-
-           p/java
-           p/owasp-top-ten
+          path: ${{ inputs.servicedir }}/target/*.jar
 
-      - name: create cache folder
-        run: mkdir -p ~/.dependency-check #ODC_DATA_DIR
-        
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:java"
+
+      - name: Semgrep SAST (Java + OWASP)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: |
+            p/java
+            p/owasp-top-ten
+
+      - name: Create cache folder
+        run: mkdir -p ~/.dependency-check
+
       - name: Cache OWASP NVD database
-       
         uses: actions/cache@v4
         with:
-         path: ~/.dependency-check #ODC_DATA_DIR
-         key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.servicedir)) }}
-         restore-keys: owasp-nvd-${{ runner.os }}-
-    
+          path: ~/.dependency-check
+          key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.servicedir)) }}
+          restore-keys: |
+            owasp-nvd-${{ runner.os }}-
 
       - name: OWASP Dependency Check
         if: false
         working-directory: ${{ inputs.servicedir }}
-        run: | 
-         
-         mvn org.owasp:dependency-check-maven:check -Ddata.directory=~/.dependency-check -Dformat=HTML -DfailBuildOnCVSS=7 -DoutputDirectory=target/dependency-check-report -DnvdApiKey=${{ secrets.NVD_API_KEY }}
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-      
+        run: |
+          mvn org.owasp:dependency-check-maven:check \
+            -Ddata.directory=~/.dependency-check \
+            -Dformat=HTML \
+            -DfailBuildOnCVSS=7 \
+            -DoutputDirectory=target/dependency-check-report \
+            -DnvdApiKey=${{ secrets.NVD_API_KEY }}

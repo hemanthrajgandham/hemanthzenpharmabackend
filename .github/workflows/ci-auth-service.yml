@@ -1,0 +1,41 @@
+name: CI/CD auth-service
+
+on:
+  push:
+    branches: ["develop", "release/**"]
+    paths:
+      - 'auth-service/**'
+      - '.github/workflows/ci-auth-service.yml'
+
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  buildci:
+    name: Build and Push
+    uses: ./.github/workflows/_java-build.yml
+    with:
+      project: pharma
+      environments: dev
+      servicedir: auth-service
+    secrets: inherit
+
+  deploy:
+    name: Deploy to Dev
+    needs: buildci
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout GitOps repository
+        uses: actions/checkout@v4
+        with:
+          repository: hemanthrajgandham/zen-gitops
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: _gitops
+
+      - name: Get image tag
+        run: |
+          echo "Image Number: ${{ needs.buildci.outputs.IMAGE_NUMBER }}"
