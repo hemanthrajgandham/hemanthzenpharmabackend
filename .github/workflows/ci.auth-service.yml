@@ -29,6 +29,6 @@ jobs:
    - name: checkout the gitops
      uses: actions/checkout@v4
      with:
-      reference: hemanthrajgandham/gitops
+      repository: hemanthrajgandham/gitops
       path: _gitops
       token: "${{secrets.GITOPS_TOKEN}}"
