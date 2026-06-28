@@ -34,4 +34,4 @@ jobs:
       path: _gitops
       token: "${{secrets.GITOPS_TOKEN}}"
    - name: update the yaml
-     run: yq -e '.image.tag= "${{needs.buildandpush.outputs.IMAGE_NUMBER}}"' -i _gitops/envs/dev/values-auth-service.yml
+     run: yq eval '.image.tag= "${{needs.buildandpush.outputs.IMAGE_NUMBER}}"' -i _gitops/envs/dev/values-auth-service.yaml
