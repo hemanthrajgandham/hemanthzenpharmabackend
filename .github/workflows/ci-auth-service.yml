@@ -11,7 +11,7 @@
    security-events: write
    actions: read
   jobs:
-   build:
+   buildci:
     name: build and push
     uses: ./.github/workflows/_java-build.yml
     with:
@@ -20,7 +20,7 @@
      servicedir: auth-service
    deploy:
     name: deploy to dev
-    needs: build
+    needs: buildci
     runs-on: ubuntu-22.04
     steps:
     - name: checkout
