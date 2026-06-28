@@ -43,3 +43,27 @@ jobs:
       git config user.email "github-actions[bot]@users.noreply.github.com"
       git commit -m 'ci(dev): update auth-service → ${IMAGE_TAG}'
       git push
+ openprqa:
+   runs-on: ubuntu-22.04
+   needs: buildandpush
+   steps: 
+   - name: checkout
+     uses: actions/checkout@v4
+     with:
+      repository: hemanthrajgandham/zen-gitops
+      token: ${{secrets.GITOPS_TOKEN}}
+      path: _gitops
+   - name: create branch,commit and open pr
+     run: |
+      IMAGE_TAG="${{needs.buildandpush.outputs.IMAGE_NUMBER}}" 
+      BRANCH="promote/qa/auth-service/${IMAGE_TAG}"
+      cd _gitops
+      git checkout -b $BRANCH
+      yq eval '.image.tag'="$IMAGE_TAG" -i "_gitops/envs/qa/values-auth-service.yaml"
+      git config user.name "github-actions[bot]"
+      git config user.email "github-actions[bot]@users.noreply.github.com"
+      git add .
+      git commit -m "promote(qa): auth-service → ${IMAGE_TAG}"
+      git push origin $BRANCH
+
+
