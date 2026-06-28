@@ -143,6 +143,23 @@
         <artifactId>sonar-maven-plugin</artifactId>
         <version>3.10.0.2594</version>
       </plugin>
+
+      <plugin>
+  <groupId>org.pitest</groupId>
+  <artifactId>pitest-maven</artifactId>
+  <version>1.14.2</version>
+  <configuration>
+    <targetClasses>
+      <param>com.pharma.auth.*</param>
+    </targetClasses>
+    <targetTests>
+      <param>com.pharma.auth.*Test</param>
+    </targetTests>
+    <mutators>
+      <mutator>DEFAULTS</mutator>
+    </mutators>
+  </configuration>
+</plugin>
     </plugins>
   </build>
 </project>
