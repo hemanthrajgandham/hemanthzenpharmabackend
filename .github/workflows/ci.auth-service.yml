@@ -20,4 +20,9 @@ jobs:
     environments: dev
     servicedir: auth-service
    secrets: inherit
-      
+ deploytodev:
+   runs-on: ubuntu:latest
+   needs: buildandpush
+   steps:
+   - name: print the image number
+     run: echo "${{needs.buildandpush.outputs.IMAGE_NUMBER}}"     
