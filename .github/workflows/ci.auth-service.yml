@@ -21,7 +21,7 @@ jobs:
     servicedir: auth-service
    secrets: inherit
  deploytodev:
-   runs-on: ubuntu:22.04
+   runs-on: ubuntu-22.04
    needs: buildandpush
    steps:
    - name: print the image number
