@@ -1,4 +1,5 @@
 name: Reusable — Java Build & Security Gates
+
 on:
   workflow_call:
     inputs:
@@ -7,80 +8,91 @@ on:
         required: true
         type: string
         default: pharma
+
       environments:
         description: "environment name"
         type: string
         default: dev
+
       servicedir:
         description: 'Service directory'
         required: true
         type: string
+
     outputs:
       IMAGE_NUMBER:
         description: short github run number
         value: ${{ jobs.image.outputs.IMAGE_NUMBER }}
+
       REGISTRY:
         value: ${{ jobs.image.outputs.REGISTRY }}
+
       PROJECT:
         value: ${{ inputs.project }}
+
       ENVIRONMENT:
         value: ${{ inputs.environments }}
+
       SERVICE_DIR:
         value: ${{ inputs.servicedir }}
+
       IMAGE:
-       value: ${{jobs.image.outputs.IMAGE}}
+        value: ${{ jobs.image.outputs.IMAGE }}
+
     secrets:
       AWS_ACCOUNT_ID:
         required: true
+
       NVD_API_KEY:
         required: false
-    
-         
 
 permissions:
   id-token: write
   contents: read
   security-events: write
 
-
-
 jobs:
- buildpr:
-    name: pr check cycle
+  buildpr:
+    name: PR Check Cycle
     uses: ./.github/workflows/_java-pr-check.yml
+
     with:
-       project: ${{inputs.project}}
-       environments: ${{inputs.environments}}
-       servicedir: ${{inputs.servicedir}}
+      project: ${{ inputs.project }}
+      environments: ${{ inputs.environments }}
+      servicedir: ${{ inputs.servicedir }}
+
     secrets: inherit
 
- image:
+  image:
     needs: buildpr
     runs-on: ubuntu-latest
+
     outputs:
       REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       IMAGE_NUMBER: ${{ needs.buildpr.outputs.IMAGE_NUMBER }}
-      IMAGE: ${{steps.docker-build.outputs.IMAGE}}
-   
-     
+      IMAGE: ${{ steps.docker-build.outputs.IMAGE }}
+
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: aws credentials
-        uses: aws-actions/configure-aws-credentials@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{secrets.AWS_ACCOUNT_ID}}:role/pharma-dev-github-action-role
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/pharma-dev-github-action-role
           aws-region: us-east-1
-      - name: login to ecr
+
+      - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-      - name: download jar
+
+      - name: Download JAR
         uses: actions/download-artifact@v4
         with:
           name: app.jar
-          path: ${{inputs.servicedir}}/target
+          path: ${{ inputs.servicedir }}/target
 
-      - name: docker build
+      - name: Docker build
         id: docker-build
         working-directory: ${{ inputs.servicedir }}
         env:
@@ -91,47 +103,52 @@ jobs:
           IMAGE_NUMBER: ${{ needs.buildpr.outputs.IMAGE_NUMBER }}
 
         run: |
-          #cd $SERVICE_DIR
-          image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
-          echo $image
-          docker build --build-arg UID=2000 --build-arg GID=2000 -t $image .
-          echo "IMAGE=$image" >> $GITHUB_OUTPUT
+          IMAGE="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
+
+          echo "Building image: $IMAGE"
+
+          docker build \
+            --build-arg UID=2000 \
+            --build-arg GID=2000 \
+            -t "$IMAGE" .
+
+          echo "IMAGE=$IMAGE" >> $GITHUB_OUTPUT
 
       - name: Aqua Security Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
-          image-ref: "${{steps.docker-build.outputs.IMAGE}}"
+          image-ref: ${{ steps.docker-build.outputs.IMAGE }}
           exit-code: 0
           severity: HIGH,CRITICAL
           format: sarif
           output: trivy-results.sarif
 
-      - name: Upload Trivy SARIF to GitHub Security tab
+      - name: Upload Trivy SARIF to GitHub Security Tab
         if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results.sarif
           category: trivy-${{ inputs.servicedir }}
-      - name: image push
+
+      - name: Push image
         id: push
         run: |
-          IMAGE="${{steps.docker-build.outputs.IMAGE}}"
-          echo "$IMAGE"
+          IMAGE="${{ steps.docker-build.outputs.IMAGE }}"
+
+          echo "Pushing $IMAGE"
+
           docker push "$IMAGE"
+
           DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE" | awk -F@ '{print $2}')
+
           echo "digest=$DIGEST" >> $GITHUB_OUTPUT
-          echo "Pushed: $IMAGE  (digest: $DIGEST)"
-      - name: install cosign
+
+          echo "Pushed: $IMAGE (digest: $DIGEST)"
+
+      - name: Install Cosign
         uses: sigstore/cosign-installer@v4.1.2
 
-      - name: sign image
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          PROJECT: ${{ inputs.project }}
-          ENVIRONMENT: ${{ inputs.environments }}
-          SERVICE_DIR: ${{ inputs.servicedir }}
-          IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
+      - name: Sign image
         run: |
-          image="${REGISTRY}/${PROJECT}-${ENVIRONMENT}-${SERVICE_DIR}:${IMAGE_NUMBER}"
-          cosign sign --yes "${image}"
+          cosign sign --yes "${{ steps.docker-build.outputs.IMAGE }}"
