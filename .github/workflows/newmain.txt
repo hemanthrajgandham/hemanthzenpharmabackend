@@ -1,0 +1,132 @@
+
+name: cicd pipeline 1
+
+on:
+  workflow_dispatch:
+    inputs:
+      environments:
+        type: choice
+        options:
+          - dev
+          - qa
+
+      servicedir:
+        description: 'Service directory'
+        required: true
+        type: choice
+        options:
+          - auth-service
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      # ----------------------------
+      # CodeQL
+      # ----------------------------
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+
+      # ----------------------------
+      # Build + Tests + JaCoCo
+      # ----------------------------
+      - name: Integration Testing
+        working-directory: ${{ inputs.servicedir }}
+        run: |
+          mvn clean verify
+
+      - name: Upload JaCoCo Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: ${{ inputs.servicedir }}/target/site/jacoco/
+
+      # ----------------------------
+      # CodeQL Analysis
+      # ----------------------------
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          output: results
+          upload: true
+
+      - name: Upload CodeQL Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results
+          path: results
+
+      # ----------------------------
+      # Semgrep
+      # ----------------------------
+      - name: Semgrep SAST
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: |
+            p/java
+            p/owasp-top-ten
+
+      # ----------------------------
+      # OWASP Dependency Check Cache
+      # ----------------------------
+      - name: Create Dependency Check Cache Folder
+        run: mkdir -p $HOME/.dependency-check
+
+      - name: Cache OWASP NVD Database
+        uses: actions/cache@v4
+        with:
+          path: $HOME/.dependency-check
+          key: owasp-nvd-${{ runner.os }}-${{ hashFiles(format('{0}/pom.xml', inputs.servicedir)) }}
+          restore-keys: |
+            owasp-nvd-${{ runner.os }}-
+
+      - name: Check Cache Contents
+        run: ls -la $HOME/.dependency-check
+
+      # ----------------------------
+      # OWASP Dependency Check
+      # ----------------------------
+      - name: OWASP Dependency Check
+        working-directory: ${{ inputs.servicedir }}
+        run: |
+          mvn org.owasp:dependency-check-maven:check \
+            -Ddata.directory=$HOME/.dependency-check \
+            -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
+            -Dnvd.delay=8000 \
+            -Dnvd.maxRetryCount=50 \
+            -Dformat=HTML \
+            -DfailBuildOnCVSS=7 \
+            -DoutputDirectory=target/dependency-check-report
+
+      - name: Upload Dependency Check Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: ${{ inputs.servicedir }}/target/dependency-check-report/
+
+      # ----------------------------
+      # Upload SARIF (Optional)
+      # ----------------------------
+      - name: Upload Semgrep SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
+
