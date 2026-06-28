@@ -55,11 +55,11 @@ jobs:
     secrets: inherit
 
  image:
-    needs: build
+    needs: buildpr
     runs-on: ubuntu-latest
     outputs:
       REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
+      IMAGE_NUMBER: ${{ needs.buildpr.outputs.IMAGE_NUMBER }}
       IMAGE: ${{steps.docker-build.outputs.IMAGE}}
    
      
@@ -88,7 +88,7 @@ jobs:
           PROJECT: ${{ inputs.project }}
           ENVIRONMENT: ${{ inputs.environments }}
           SERVICE_DIR: ${{ inputs.servicedir }}
-          IMAGE_NUMBER: ${{ needs.build.outputs.IMAGE_NUMBER }}
+          IMAGE_NUMBER: ${{ needs.buildpr.outputs.IMAGE_NUMBER }}
 
         run: |
           #cd $SERVICE_DIR
