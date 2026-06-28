@@ -1,7 +1,7 @@
 name: hemanth cicd pipeline
 on:
  push:
-  branches: ["main"]
+ # branches: ["main"]
 permissions: 
  contents: read
  id-token: write
