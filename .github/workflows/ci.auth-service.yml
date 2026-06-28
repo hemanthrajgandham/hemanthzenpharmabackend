@@ -11,6 +11,8 @@ permissions:
  contents: read
  security-events: write
  actions: read
+
+ 
 jobs:
  buildandpush:
    name: full ci
@@ -45,7 +47,7 @@ jobs:
       git push
  openprqa:
    runs-on: ubuntu-22.04
-   needs: deploytodev
+   needs: buildandpush
    steps: 
    - name: checkout
      uses: actions/checkout@v4
