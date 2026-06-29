@@ -33,6 +33,8 @@ jobs:
     -  name: show the image number
        run: echo "${{steps.imagenumber.outputs.image}}"
     -  name: create branch
+       env:
+         gh_token: ${{secrets.GITHUB_TOKEN}}
        run: |
          image=${{steps.imagenumber.outputs.image}}
          BRANCH="promote/prod/${{inputs.services}}/${image}"
