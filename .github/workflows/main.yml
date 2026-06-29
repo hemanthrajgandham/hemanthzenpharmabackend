@@ -8,12 +8,12 @@ on:
        options:
          - auth-service
          - api-gateway
-      envs:
-        type: choice
-        options:
-        - dev
-        - qa
-        - prod
+     envs:
+       type: choice
+       options:
+       - dev
+       - qa
+       - prod
 permissions: 
   id-token: write
   security-events: write
@@ -26,14 +26,14 @@ jobs:
     - name: checkout the code for gitops
       uses: actions/checkout@v4
       with:
-       repository: hemanthrajgandham/zen-gitops/
+       repository: hemanthrajgandham/zen-gitops
        path: _gitops
        token: ${{secrets.GITHUB_TOKEN}}
     -  name: read the image number
        id: imagenumber
        run: |
-        IMAGE=$(yq eval '.image.tag' _gitops/envs/${{inputs.envs}}/values-${{inputs.services}})
-        echo image=$IMAGE > $GITHUB_OUTPUTS
+        IMAGE=$(yq eval '.image.tag' "_gitops/envs/${{inputs.envs}}/values-${{inputs.services}}.yaml")
+        echo "image=$IMAGE" > $GITHUB_OUTPUT
            
     -  name: show the image number
        run: echo ${{steps.imagenumber.outputs.image}}
