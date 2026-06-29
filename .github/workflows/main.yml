@@ -34,7 +34,7 @@ jobs:
        run: echo "${{steps.imagenumber.outputs.image}}"
     -  name: create branch
        env:
-         GH_TOKEN: "${{secrets.GITHUB_TOKEN}}"
+         GH_TOKEN: "${{secrets.GITOPS_TOKEN}}"
        run: |
          image=${{steps.imagenumber.outputs.image}}
          BRANCH="promote/prod/${{inputs.services}}/${image}"
