@@ -28,13 +28,13 @@ jobs:
        id: imagenumber
        run: |
         IMAGE=$(yq eval '.image.tag' "_gitops/envs/qa/values-${{inputs.services}}.yaml")
-        echo "image=$IMAGE" > $GITHUB_OUTPUT
+        echo "image=$IMAGE" >> $GITHUB_OUTPUT
            
     -  name: show the image number
-       run: echo "$IMAGE"
+       run: echo "${IMAGE}"
     -  name: create branch
        run: |
-         $BRANCH="promote/prod/${{inputs.services}}/$IMAGE"
+         $BRANCH="promote/prod/${{inputs.services}}/${IMAGE}"
          cd _gitops
          git checkout -b $BRANCH
 
