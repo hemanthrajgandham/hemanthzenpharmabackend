@@ -8,12 +8,7 @@ on:
        options:
          - auth-service
          - api-gateway
-     envs:
-       type: choice
-       options:
-       - dev
-       - qa
-       - prod
+     
 permissions: 
   id-token: write
   security-events: write
@@ -32,7 +27,7 @@ jobs:
     -  name: read the image number
        id: imagenumber
        run: |
-        IMAGE=$(yq eval '.image.tag' "_gitops/envs/${{inputs.envs}}/values-${{inputs.services}}.yaml")
+        IMAGE=$(yq eval '.image.tag' "_gitops/envs/qa/values-${{inputs.services}}.yaml")
         echo "image=$IMAGE" > $GITHUB_OUTPUT
            
     -  name: show the image number
