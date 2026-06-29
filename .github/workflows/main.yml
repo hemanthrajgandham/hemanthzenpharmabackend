@@ -59,7 +59,7 @@ jobs:
          ""\
          "merging the pr  means updating the prod yaml values and argocd is manual sync and sync it during change window" > /tmp/body.md
 
-         gh pr create --repo hemanthrajgandham/zen-gitops --title "promote prod:${{inputs.services}} -> ${image}" --body /tmp/body.md --base main --head "$BRANCH"
+         gh pr create --repo hemanthrajgandham/zen-gitops --title "promote prod:${{inputs.services}} -> ${image}" --body-file /tmp/body.md --base main --head "$BRANCH"
 
           echo "::notice title=PROD PR opened::Review, get approvals, and merge in hemanthrajgandham\gitops. Then manually sync ArgoCD pharma-prod/${{inputs.services}}."
          
