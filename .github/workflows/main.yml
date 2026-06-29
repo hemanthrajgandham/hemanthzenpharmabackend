@@ -34,7 +34,7 @@ jobs:
        run: echo "${{steps.imagenumber.outputs.image}}"
     -  name: create branch
        run: |
-         $BRANCH="promote/prod/${{inputs.services}}/${{steps.imagenumber.outputs.image}}"
+         BRANCH="promote/prod/${{inputs.services}}/${{steps.imagenumber.outputs.image}}"
          cd _gitops
          git checkout -b $BRANCH
 
