@@ -34,9 +34,17 @@ jobs:
        run: echo "${{steps.imagenumber.outputs.image}}"
     -  name: create branch
        run: |
-         BRANCH="promote/prod/${{inputs.services}}/${{steps.imagenumber.outputs.image}}"
+         image=${{steps.imagenumber.outputs.image}}
+         BRANCH="promote/prod/${{inputs.services}}/${image}"
          cd _gitops
          git checkout -b $BRANCH
+         yq eval '{.image.tag}'=\"${image}\" -i "envs/prod/values-${{inputs.services}}.yaml"
+         git config user.name "github-actions[bot]"
+         git config user.email "github-actions[bot]@users.noreply.github.com"
+         git add "envs/prod/values-${{inputs.services}}.yaml"
+         git commit -m " added qa imagenumber to prod promote branch by github bot"
+
+         git push origin $BRANCH
 
          
     
