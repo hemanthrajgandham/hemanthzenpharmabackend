@@ -46,7 +46,7 @@ jobs:
          git add "envs/prod/values-${{inputs.services}}.yaml"
          git commit -m " added qa imagenumber to prod promote branch by github bot"
 
-         git push origin $BRANCH
+         git push -f origin $BRANCH
 
          
     
