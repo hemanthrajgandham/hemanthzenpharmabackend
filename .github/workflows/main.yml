@@ -23,7 +23,7 @@ jobs:
       with:
        repository: hemanthrajgandham/zen-gitops
        path: _gitops
-       token: ${{secrets.GITHUB_TOKEN}}
+       token: ${{secrets.GITOPS_TOKEN}}
     -  name: read the image number
        id: imagenumber
        run: |
