@@ -31,10 +31,10 @@ jobs:
         echo "image=$IMAGE" >> $GITHUB_OUTPUT
            
     -  name: show the image number
-       run: echo "${IMAGE}"
+       run: echo "${{steps.imagenumber.outputs.image}}"
     -  name: create branch
        run: |
-         $BRANCH="promote/prod/${{inputs.services}}/${IMAGE}"
+         $BRANCH="promote/prod/${{inputs.services}}/${{steps.imagenumber.outputs.image}}"
          cd _gitops
          git checkout -b $BRANCH
 
