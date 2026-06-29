@@ -1,0 +1,40 @@
+name: promote to prod
+on:
+ workflow_dispatch:
+   inputs:
+     services:
+       type: choice
+       description: "select the service for promotion to code"
+       options:
+         - auth-service
+         - api-gateway
+      envs:
+        type: choice
+        options:
+        - dev
+        - qa
+        - prod
+permissions: 
+  id-token: write
+  security-events: write
+  contents: read
+  actions: read
+jobs:
+  promote_to_prod:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: checkout the code for gitops
+      uses: actions/checkout@v4
+      with:
+       repository: hemanthrajgandham/zen-gitops/
+       path: _gitops
+       token: ${{secrets.GITHUB_TOKEN}}
+    -  name: read the image number
+       id: imagenumber
+       run: |
+        IMAGE=$(yq eval '.image.tag' _gitops/envs/${{inputs.envs}}/values-${{inputs.services}})
+        echo image=$IMAGE > $GITHUB_OUTPUTS
+           
+    -  name: show the image number
+       run: echo ${{steps.imagenumber.outputs.image}}
+    
